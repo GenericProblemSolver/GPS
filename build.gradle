@@ -1,0 +1,181 @@
+plugins {
+  id 'java'
+  id 'eclipse'
+  id 'idea'
+  id 'checkstyle'
+  id 'findbugs'
+  id "com.diffplug.gradle.spotless" version "1.3.3"
+}
+import javax.tools.ToolProvider
+import org.apache.tools.ant.taskdefs.condition.Os
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    buttCompile {
+        extendsFrom compile
+    }
+}
+
+dependencies {
+    compile 'org.reflections:reflections:0.9.10',
+            'com.esotericsoftware:kryo:3.0.3',
+            'org.beykery:neuroph:2.92',
+            'args4j:args4j:2.33',
+            'org.antlr:antlr4:4.5.3',
+            files("${projectDir}/libs/com.microsoft.z3.jar"),
+            files("${projectDir}/libs/CVC4.jar"),
+            files("${projectDir}/libs/ggp-base-stanford.jar"),
+            files(((URLClassLoader) ToolProvider.getSystemToolClassLoader()).getURLs()).filter { f -> f.toString().contains("tools.jar")}
+    testCompile 'junit:junit:4.12'
+    buttCompile 'com.beust:jcommander:1.48' 
+}
+
+tasks.withType(Test){
+  environment 'PATH', "${projectDir}/z3/"
+  if(System.properties['sun.arch.data.model'].equals('64')){
+      if(Os.isFamily(Os.FAMILY_MAC)) {
+          environment 'DYLD_LIBRARY_PATH', "${projectDir}/libs/natives/osx/amd64/"
+      } else if(Os.isFamily(Os.FAMILY_UNIX)) {
+          environment 'LD_LIBRARY_PATH', "${projectDir}/libs/natives/unix/amd64/"
+      }
+  }
+  else{
+      if(Os.isFamily(Os.FAMILY_MAC)) {
+          environment 'DYLD_LIBRARY_PATH', "${projectDir}/libs/natives/osx/x86/"
+      } else if(Os.isFamily(Os.FAMILY_UNIX)) {
+          environment 'LD_LIBRARY_PATH', "${projectDir}/libs/natives/unix/x86/"
+      }
+  }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+task fatJar(type: Jar) {
+    baseName = 'GPS'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    with jar
+    manifest {
+        attributes 'Implementation-Title' : 'GPS', 'Implementation-Version' : '0.1'
+        attributes 'Main-Class' : 'gps.GpsCli'
+    }
+}
+
+sourceSets {
+    butt {
+        java.srcDir 'src/butt/java'
+        resources.srcDir 'src/butt/resources'
+        compileClasspath = configurations.buttCompile + sourceSets.main.runtimeClasspath
+    }
+    test{
+        java{
+            exclude 'cli/**'
+        }
+    }
+    test.compileClasspath += sourceSets.butt.runtimeClasspath
+}
+
+test.classpath += sourceSets.butt.runtimeClasspath
+
+task buttJar(type: Jar){
+    baseName = project.name + '-butt'
+    from { configurations.buttCompile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    with jar {
+        from sourceSets.butt.output
+    }
+    manifest {
+        attributes 'Main-Class': 'butt.gui.MainGUI'
+    }
+}
+
+task butt(type:JavaExec) {
+    main = 'butt.gui.MainGUI'
+    classpath = sourceSets.butt.runtimeClasspath + sourceSets.main.runtimeClasspath
+}
+
+spotless {
+    java {
+		target project.fileTree(project.rootDir) {
+			include 'src/**/*.java'
+			exclude '**/sun/misc/*.java'
+			exclude '**/java/lang/*.java'
+			exclude 'src/test/java/cli/*.java'
+        }
+        eclipseFormatFile 'GPSFormat.xml'
+        licenseHeaderFile 'config/license-header.txt' 
+
+    }
+}
+
+
+findbugs {
+    toolVersion = "3.0.1"
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "low"
+    sourceSets = []
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+ext { 
+  eclipseAptFolder = '.apt_generated'
+  eclipseSettingsDir = file('.settings')
+}
+
+eclipse {
+  jdt.file.withProperties { 
+    it['org.eclipse.jdt.core.compiler.processAnnotations'] = 'enabled'
+  }
+  classpath {
+    plusConfigurations += [ configurations.buttCompile ]
+  }
+}
+
+tasks.cleanEclipseJdt {
+    delete('.factorypath')
+}
+
+tasks.eclipseJdt.dependsOn clean ,fatJar
+
+tasks.eclipseJdt {
+  doFirst {
+    def aptPrefs = 
+      file("${eclipseSettingsDir}/org.eclipse.jdt.apt.core.prefs")
+    aptPrefs.parentFile.mkdirs()
+
+    aptPrefs.text = """\
+    eclipse.preferences.version=1
+    org.eclipse.jdt.apt.aptEnabled=true
+    org.eclipse.jdt.apt.genSrcDir=${eclipseAptFolder}
+    org.eclipse.jdt.apt.reconcileEnabled=true
+    """.stripIndent()
+
+    file('.factorypath').withWriter {
+        new groovy.xml.MarkupBuilder(it).'factorypath' {
+            files('build/libs/' + project.name + '-all.jar').each { dep ->
+                'factorypathentry' kind: 'EXTJAR', id: dep.absolutePath, enabled: true, runInBatchMode: false
+            }
+        }
+    }
+    
+  }
+}
+
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

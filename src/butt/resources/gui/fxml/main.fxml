@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="butt.gui.MainController">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="%menu.file">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#quit" text="%menu.quit" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="%menu.settings">
+               <items>
+                  <Menu mnemonicParsing="false" text="%menu.language">
+                    <items>
+                        <RadioMenuItem disable="true" mnemonicParsing="false" selected="true" text="%menu.lang.en">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="language" />
+                           </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem disable="true" mnemonicParsing="false" text="%menu.lang.de" toggleGroup="$language" />
+                    </items>
+                  </Menu>
+               </items>
+            </Menu>
+      </menus>
+    </MenuBar>
+      <AnchorPane layoutX="10.0" layoutY="135.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <TabPane prefHeight="200.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab text="%tab.benchmarks">
+                  <content>
+                    <fx:include source="benchmark.fxml" />
+                  </content>
+                     <tooltip>
+                        <Tooltip text="%tipp.tab.benchmarks" />
+                     </tooltip>
+                </Tab>
+                <Tab text="%tab.evaluation">
+                  <content>
+                    <AnchorPane>
+                           <children>
+                              <SplitPane dividerPositions="0.29797979797979796" prefHeight="536.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                     <tooltip>
+                        <Tooltip text="%tipp.tab.evaluation" />
+                     </tooltip>
+                </Tab>
+                  <Tab text="%tab.training">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <Label prefHeight="546.0" prefWidth="800.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children></AnchorPane>
+                     </content>
+                     <tooltip>
+                        <Tooltip text="%tipp.tab.training" />
+                     </tooltip>
+                  </Tab>
+                  <Tab text="%tab.algoarena">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ToolBar>
+                                       <items>
+                                          <Button mnemonicParsing="false" text="%key.run" />
+                                          <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="%key.stop" />
+                                          <Separator prefHeight="25.0" prefWidth="58.0" visible="false" />
+                                          <Label text="Time" />
+                                          <ComboBox editable="true" prefWidth="100.0" value="5s">
+                                             <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                   <String fx:value="100ms" />
+                                                   <String fx:value="1s" />
+                                                   <String fx:value="5s" />
+                                                   <String fx:value="10s" />
+                                                   <String fx:value="30s" />
+                                                   <String fx:value="1m" />
+                                                   <String fx:value="5m" />
+                                                   <String fx:value="10m" />
+                                                   <String fx:value="30m" />
+                                                </FXCollections>
+                                             </items>
+                                          </ComboBox>
+                                          <Label text="Game" />
+                                          <ComboBox />
+                                          <Label text="Players" />
+                                          <ComboBox value="2">
+                                                                                       <items>
+										        <FXCollections fx:factory="observableArrayList">
+										          <Integer fx:value="2" />
+										          <Integer fx:value="3" />
+										          <Integer fx:value="4" />
+										        </FXCollections>
+										     </items>
+										     </ComboBox>
+                                          <MenuButton mnemonicParsing="false" text="Algorithms">
+                                             <items>
+                                                <MenuItem mnemonicParsing="false" text="Player 1">
+                                                   <graphic>
+                                                      <ComboBox prefWidth="150.0" value="CONSOLE">
+                                                                                       <items>
+										        <FXCollections fx:factory="observableArrayList">
+										          <String fx:value="CONSOLE" />
+										          <String fx:value="NMCTS" />
+										          <String fx:value="AB-Pruning" />
+										        </FXCollections>
+										     </items>
+										     </ComboBox>
+                                                   </graphic>
+                                                </MenuItem>
+                                                <MenuItem mnemonicParsing="false" text="Player 2">
+                                                   <graphic>
+                                                      <ComboBox prefWidth="150.0" value="CONSOLE">
+                                                                                       <items>
+										        <FXCollections fx:factory="observableArrayList">
+										          <String fx:value="CONSOLE" />
+										          <String fx:value="NMCTS" />
+										          <String fx:value="AB-Pruning" />
+										        </FXCollections>
+										     </items>
+										     </ComboBox>
+                                                   </graphic>
+                                                </MenuItem>
+                                             </items>
+                                          </MenuButton>
+                                       </items>
+                                    </ToolBar>
+                                    <AnchorPane VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <SplitPane dividerPositions="0.25" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <items>
+                                                <VBox>
+                                                   <children>
+                                                      <StackPane VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                                                               <content>
+                                                                  <VBox>
+                                                                     <children>
+                                                                        <Button mnemonicParsing="false" prefWidth="9999.0" text="Button" />
+                                                                        <Button mnemonicParsing="false" prefWidth="9999.0" text="Button" />
+                                                                        <Button mnemonicParsing="false" prefWidth="9999.0" text="Button" />
+                                                                     </children>
+                                                                  </VBox>
+                                                               </content>
+                                                            </ScrollPane>
+                                                            <BorderPane visible="false" VBox.vgrow="ALWAYS">
+                                                               <center>
+                                                                  <Label alignment="CENTER" contentDisplay="TOP" text="Calculating" textAlignment="CENTER" BorderPane.alignment="CENTER">
+                                                                     <font>
+                                                                        <Font size="48.0" />
+                                                                     </font>
+                                                                     <graphic>
+                                                                        <ProgressIndicator prefHeight="192.0" prefWidth="192.0" />
+                                                                     </graphic>
+                                                                  </Label>
+                                                               </center>
+                                                            </BorderPane>
+                                                         </children>
+                                                      </StackPane>
+                                                   </children>
+                                                </VBox>
+                                                <SplitPane dividerPositions="0.25, 0.75" orientation="VERTICAL">
+                                                  <items>
+                                                      <TitledPane animated="false" text="untitled">
+                                                        <content>
+                                                          <AnchorPane />
+                                                        </content>
+                                                      </TitledPane>
+                                                      <TitledPane animated="false" text="untitled">
+                                                         <content>
+                                                            <AnchorPane />
+                                                         </content>
+                                                      </TitledPane>
+                                                      <TitledPane animated="false" text="untitled">
+                                                         <content>
+                                                            <AnchorPane />
+                                                         </content>
+                                                      </TitledPane>
+                                                  </items>
+                                                </SplitPane>
+                                             </items>
+                                          </SplitPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <TitledPane expanded="false" text="Move History" VBox.vgrow="NEVER">
+                                       <content>
+                                          <ScrollPane fitToHeight="true" nodeOrientation="LEFT_TO_RIGHT" pannable="true" prefViewportHeight="40.0" vbarPolicy="NEVER">
+                                             <content>
+                                                <HBox>
+                                                   <children>
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Buttonmnbbmm" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                      <Button mnemonicParsing="false" text="Button" />
+                                                   </children>
+                                                </HBox>
+                                             </content>
+                                          </ScrollPane>
+                                       </content>
+                                    </TitledPane>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                     <tooltip>
+                        <Tooltip text="%tipp.tab.benchmarks" />
+                     </tooltip>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </AnchorPane>
+  </children>
+</VBox>

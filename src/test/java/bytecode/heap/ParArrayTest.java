@@ -1,0 +1,41 @@
+/*
+ * Copyright 2016  Generic Problem Solver Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package bytecode.heap;
+
+import org.junit.runner.RunWith;
+
+import bytecode.AssertSatisfiable;
+import bytecode.ConstraintProblemRunner;
+import gps.annotations.Constraint;
+
+@RunWith(ConstraintProblemRunner.class)
+@AssertSatisfiable
+public class ParArrayTest {
+
+    @Constraint
+    public boolean parTest1(int i) {
+        int[] array = new int[i];
+        return 13 == array.length;
+    }
+
+    public boolean parTest2(int i, int j) {
+        int[][] array = new int[i][j];
+        array[2][5] = 24;
+        array[3][6] = 12;
+        return array.length == 5 && array[2].length == 7;
+    }
+}

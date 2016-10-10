@@ -1,0 +1,17 @@
+buildJob:
+  stage: build
+  script: "./gradlew fatJar"
+  artifacts:
+    paths:
+    - build/libs/GPS.jar
+    - GPS.sh
+    - GPS.cmd
+
+testJob:
+  stage: test
+  script: "./gradlew check"
+
+mergeTestJob:
+  stage: test
+  script: "git merge master && ./gradlew check"
+  allow_failure: true

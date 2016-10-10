@@ -1,0 +1,6 @@
+(role a)
+(role b)
+(role c)
+
+(init (control a))
+
